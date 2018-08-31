@@ -51,5 +51,5 @@ VOLV_API void RegisterFlag(CommandId id, struct CLIFlag flag);
 VOLV_API void PrintFlags(CommandId commandId);
 
 VOLV_API const char *GetCCompiler();
-VOLV_API b32 UserConfirmation(const char *message);
+VOLV_API int UserConfirmation(const char *message);
 #endif

@@ -149,7 +149,7 @@ int ResourceCommand(const char **args, size_t count) {
     char *heapBuffer = malloc(1024*1024);
 
     while ((entry = readdir(dir)) != NULL) {
-        snprintf(&dirBuffer[0], sizeof(dirBuffer), ".build/checkouts/%s/Resources/Views/*", entry->d_name);
+        snprintf(&dirBuffer[0], sizeof(dirBuffer), ".build/checkouts/%s/Resources/Views/", entry->d_name);
         DIR *subdir = opendir(dirBuffer);
         if (!subdir) continue;
         closedir(subdir);
