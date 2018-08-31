@@ -1,6 +1,7 @@
 CC=clang
 TARGET=volv
-INCLUDE_DIR=/usr/local/include/volva/
+PREFIX=/usr/local/
+INCLUDE_DIR=$(PREFIX)/include/volva/
 
 local_CFLAGS = -dynamic-list,plugins.list
 
@@ -19,7 +20,7 @@ $(TARGET):
 install:
 	mkdir -p $(INCLUDE_DIR)
 	cp src/plugins.h $(INCLUDE_DIR)
-	cp $(TARGET) /usr/local/bin
+	cp $(TARGET) $(PREFIX)/bin
 
 clean:
 	- rm -f $(TARGET)
