@@ -148,36 +148,70 @@ int ResourceCommand(const char **args, size_t count) {
     struct dirent *entry;
     char *heapBuffer = malloc(1024*1024);
 
+    DIR *subdir;
+
     while ((entry = readdir(dir)) != NULL) {
         snprintf(&dirBuffer[0], sizeof(dirBuffer), ".build/checkouts/%s/Resources/Views/", entry->d_name);
-        DIR *subdir = opendir(dirBuffer);
-        if (!subdir) continue;
-        closedir(subdir);
+        if ((subdir = opendir(dirBuffer)) != NULL) {
+            closedir(subdir);
 
-        snprintf(
-            &manifestBuffer[0],
-            sizeof(manifestBuffer),
-            ".build/checkouts/%s/Package.swift",
-            entry->d_name
-        );
+            snprintf(
+                &manifestBuffer[0],
+                sizeof(manifestBuffer),
+                ".build/checkouts/%s/Package.swift",
+                entry->d_name
+            );
 
-        FILE *swift = fopen(&manifestBuffer[0], "r");
-        if (!swift) continue;
+            FILE *swift = fopen(&manifestBuffer[0], "r");
+            if (!swift) continue;
 
-        const char *packageName = getSwiftPackageName(swift, heapBuffer, 1024*1024);
-        fclose(swift);
+            const char *packageName = getSwiftPackageName(swift, heapBuffer, 1024*1024);
+            fclose(swift);
 
-        if (!packageName) continue;
+            if (!packageName) continue;
 
-        if (!UserConfirmationV("Would you like to install '%s'", packageName)) {
-            printf("  Skipped\n");
-            continue;
+            if (!UserConfirmationV("Would you like to install resources for '%s'", packageName)) {
+                printf("  Skipped\n");
+                goto packages;
+            }
+
+            snprintf(heapBuffer, 1024, "Resources/Views/%s", packageName);
+            SystemV("mkdir", "-p", heapBuffer, NULL);
+            SystemV("cp", "-r", &dirBuffer[0], heapBuffer, NULL);
+            SystemV("chmod", "-R", "0755", heapBuffer, NULL);
         }
 
-        snprintf(heapBuffer, 1024, "Resources/Views/%s", packageName);
-        SystemV("mkdir", "-p", heapBuffer, NULL);
-        SystemV("cp", "-r", &dirBuffer[0], heapBuffer, NULL);
-        SystemV("chmod", "-R", "0755", heapBuffer, NULL);
+packages:
+        snprintf(&dirBuffer[0], sizeof(dirBuffer), ".build/checkouts/%s/Public/", entry->d_name);
+        if ((subdir = opendir(dirBuffer)) != NULL) {
+            closedir(subdir);
+
+            snprintf(
+                &manifestBuffer[0],
+                sizeof(manifestBuffer),
+                ".build/checkouts/%s/Package.swift",
+                entry->d_name
+            );
+
+            FILE *swift = fopen(&manifestBuffer[0], "r");
+            if (!swift) continue;
+
+            const char *packageName = getSwiftPackageName(swift, heapBuffer, 1024*1024);
+            fclose(swift);
+
+            if (!packageName) continue;
+
+            if (!UserConfirmationV("Would you like to install assets '%s'", packageName)) {
+                printf("  Skipped\n");
+                continue;
+            }
+
+            snprintf(heapBuffer, 1024, "Public/%s", packageName);
+            SystemV("mkdir", "-p", heapBuffer, NULL);
+            SystemV("cp", "-r", &dirBuffer[0], heapBuffer, NULL);
+            SystemV("chmod", "-R", "0755", heapBuffer, NULL);
+        }
+
     }
 
     return 0;
