@@ -175,10 +175,11 @@ int ResourceCommand(const char **args, size_t count) {
                 goto packages;
             }
 
-            snprintf(heapBuffer, 1024, "Resources/Views/%s", packageName);
-            SystemV("mkdir", "-p", heapBuffer, NULL);
-            SystemV("cp", "-r", &dirBuffer[0], heapBuffer, NULL);
-            SystemV("chmod", "-R", "0755", heapBuffer, NULL);
+            //snprintf(heapBuffer, 1024, "Resources/Views/%s", packageName);
+            const char *location = "Resources/Views/";
+            SystemV("mkdir", "-p", location, NULL);
+            SystemV("cp", "-r", &dirBuffer[0], location, NULL);
+            SystemV("chmod", "-R", "0755", location, NULL);
         }
 
 packages:
@@ -206,10 +207,11 @@ packages:
                 continue;
             }
 
-            snprintf(heapBuffer, 1024, "Public/%s", packageName);
-            SystemV("mkdir", "-p", heapBuffer, NULL);
-            SystemV("cp", "-r", &dirBuffer[0], heapBuffer, NULL);
-            SystemV("chmod", "-R", "0755", heapBuffer, NULL);
+            //snprintf(heapBuffer, 1024, "Public/%s", packageName);
+            const char *location = "Public/";
+            SystemV("mkdir", "-p", location, NULL);
+            SystemV("cp", "-r", &dirBuffer[0], location, NULL);
+            SystemV("chmod", "-R", "0755", location, NULL);
         }
 
     }
