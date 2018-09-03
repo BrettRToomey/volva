@@ -179,7 +179,7 @@ int ResourceCommand(const char **args, size_t count) {
             const char *location = "Resources/Views/";
             SystemV("mkdir", "-p", location, NULL);
             SystemV("cp", "-r", &dirBuffer[0], location, NULL);
-            SystemV("chmod", "-R", "0755", location, NULL);
+            SystemV("chmod", "-R", "0644", location, NULL);
         }
 
 packages:
@@ -211,7 +211,7 @@ packages:
             const char *location = "Public/";
             SystemV("mkdir", "-p", location, NULL);
             SystemV("cp", "-r", &dirBuffer[0], location, NULL);
-            SystemV("chmod", "-R", "0755", location, NULL);
+            SystemV("chmod", "-R", "0644", location, NULL);
         }
 
     }
